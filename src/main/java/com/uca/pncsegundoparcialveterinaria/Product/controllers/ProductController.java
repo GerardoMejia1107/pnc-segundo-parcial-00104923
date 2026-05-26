@@ -32,6 +32,13 @@ public class ProductController {
                 .body(response);
     }
 
+    @GetMapping("/products/{id}")
+    public ResponseEntity<List<ResponseProductDTO>> getById(@PathVariable Long id) {
+        List<ResponseProductDTO> response = productService.findAll();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
+    }
+
     @DeleteMapping("/products/{id}")
     public ResponseEntity<ResponseProductDTO> deleteProduct(@PathVariable Long id) {
         ResponseProductDTO response = productService.delete(id);
