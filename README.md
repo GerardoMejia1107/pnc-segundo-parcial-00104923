@@ -1,5 +1,7 @@
 # Segundo Parcial – Sistema de Gestión de Clínica Veterinaria
 
+DB = veterinaria_db
+
 ## Indicaciones Generales
 
 Lea detenidamente el enunciado y asegúrese de comprender los requisitos funcionales, las reglas de negocio y los entregables antes de comenzar. El ejercicio debe resolverse **individual**, aplicando correctamente la **arquitectura N-Capas** y las buenas prácticas vistas en clase.
