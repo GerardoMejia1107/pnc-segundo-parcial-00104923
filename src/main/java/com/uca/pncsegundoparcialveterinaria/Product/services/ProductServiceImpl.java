@@ -3,6 +3,8 @@ package com.uca.pncsegundoparcialveterinaria.Product.services;
 import com.uca.pncsegundoparcialveterinaria.Product.custom.ProductMapper;
 import com.uca.pncsegundoparcialveterinaria.Product.dto.request.CreateProductDTO;
 import com.uca.pncsegundoparcialveterinaria.Product.dto.response.ResponseProductDTO;
+import com.uca.pncsegundoparcialveterinaria.Product.exception.custom.ProductAlreadyExistsException;
+import com.uca.pncsegundoparcialveterinaria.Product.exception.custom.ProductNotFoundException;
 import com.uca.pncsegundoparcialveterinaria.Product.model.ProductModel;
 import com.uca.pncsegundoparcialveterinaria.Product.repositories.ProductRepositoryJpa;
 import com.uca.pncsegundoparcialveterinaria.Product.utils.Category;
@@ -24,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     public ResponseProductDTO create(CreateProductDTO dto) {
         ProductModel newProduct;
         if (repositoryJpa.findByName(dto.getName())) {
-            throw new RuntimeException("El producto ya existe en el sistema");
+            throw new ProductAlreadyExistsException("Product", "name", dto.getName());
         } else {
             newProduct = repositoryJpa.save(mapper.toProductModel(dto));
         }
@@ -44,14 +46,14 @@ public class ProductServiceImpl implements ProductService {
         return repositoryJpa.findById(id)
                 .map(mapper::toResponseProductDTO)
                 .orElseThrow(
-                        () -> new RuntimeException("El producto no existe en el sistema")
+                        () -> new ProductNotFoundException("Product", "id", id)
                 );
     }
 
     @Override
     public ResponseProductDTO update(Long id, CreateProductDTO dto) {
         ProductModel updateProduct = repositoryJpa.findById(id)
-                .orElseThrow(() -> new RuntimeException("El producto no existe en el sistema"));
+                .orElseThrow(() -> new ProductNotFoundException("Product", "id", id));
 
         updateProduct.setAvailable(dto.getStock() != 0);
 
@@ -72,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseProductDTO delete(Long id) {
         ProductModel deleteProduct = repositoryJpa.findById(id)
-                .orElseThrow(() -> new RuntimeException("El producto no existe en el sistema"));
+                .orElseThrow(() -> new ProductNotFoundException("Product", "id", id));
 
         if (deleteProduct.getCategory() == Category.VACCINE && deleteProduct.getAvailable() == true) {
             throw new RuntimeException("El producto no se puede eliminar");
